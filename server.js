@@ -3,21 +3,10 @@ const express = require('express');
 const mysql = require('mysql2/promise');
 const session = require('express-session');
 const authController = require('./controllers/authController');
-
+const { pool } = require('./db');  // Import the pool from db.js
 
 const app = express();
 const port = process.env.PORT || 3000;
-
-// Create a connection to MySQL database
-const pool = mysql.createPool({
-  host: '127.0.0.1',        // host
-  user: 'root',             // MySQL username
-  password: 'Redd0408@',    // MySQL password
-  database: 'league_app',   // database name
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
 
 // Test the connection 
 async function testConnection() {
