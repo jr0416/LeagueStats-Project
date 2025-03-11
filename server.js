@@ -3,10 +3,15 @@ const express = require('express');
 const mysql = require('mysql2/promise');
 const session = require('express-session');
 const authController = require('./controllers/authController');
-const { pool } = require('./db');  // Import the pool from db.js
+const lolAccountController = require('./controllers/lolAccountController');
+const championController = require('./controllers/championController');
+const matchHistoryController = require('./controllers/matchHistoryController');
+const { pool } = require('./db');  // Import from db.js
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+
 
 // Test the connection 
 async function testConnection() {
@@ -33,7 +38,7 @@ app.use(session({
   cookie: { secure: process.env.NODE_ENV === "production" }
 }));
 
-// Test route for seeing if connection to database is working
+// Test route 
 app.get('/users', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM users');
@@ -48,6 +53,16 @@ app.get('/users', async (req, res) => {
 app.post('/register', authController.register);
 app.post('/login', authController.login);
 app.post('/logout', authController.logout);
+
+// Champion Data Integration Route
+app.get('/update-champions', championController.updateChampions);
+
+// Match History Integration Route
+app.post('/match-history', matchHistoryController.updateMatchHistory);
+
+
+// Route to link a League account
+app.post('/link-account-riotid', lolAccountController.linkAccountByRiotId);
 
 // Start the server
 app.listen(port, () => {

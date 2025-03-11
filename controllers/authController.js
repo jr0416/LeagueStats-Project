@@ -51,10 +51,11 @@ exports.login = async (req, res) => {
 
     // Save user data during the session
     req.session.user = {
-      userId: user.userId,
+      userId: user.user_id,  
       username: user.username,
       email: user.email
     };
+    console.log("Session user set:", req.session.user);
     //Login Successful
     res.status(200).json({ message: 'Logged in successfully', userId: user.userId });
   } catch (error) {
