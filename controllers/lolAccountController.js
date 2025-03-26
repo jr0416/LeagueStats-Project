@@ -44,7 +44,7 @@ exports.linkAccountByRiotId = async (req, res) => {
       return res.status(404).json({ message: 'Could not find PUUID for the given Riot ID.' });
     }
     
-    // Use the provided region to build the Summoner API URL
+    // Use the selected region to build the Summoner API URL
     const summonerBaseUrl = `https://${region}.api.riotgames.com`;
     const summonerUrl = `${summonerBaseUrl}/lol/summoner/v4/summoners/by-puuid/${puuid}`;
     const summonerResponse = await axios.get(summonerUrl, {

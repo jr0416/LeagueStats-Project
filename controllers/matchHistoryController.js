@@ -16,67 +16,48 @@ function getMatchBaseUrl(region) {
   else if (region.startsWith('kr') || region.startsWith('jp')) {
     return "https://asia.api.riotgames.com";
   }
-  // Default fallback
+  // Default 
   else {
     return "https://americas.api.riotgames.com";
   }
 }
 
 exports.updateMatchHistory = async (req, res) => {
-  // User auth
   if (!req.session.user) {
     return res.status(401).json({ message: 'User not authenticated' });
   }
   const userId = req.session.user.userId;
-
   try {
-    // Retrieve the LoL account record for the logged-in user that has a riot games account linked to their profile
     const [accounts] = await pool.query('SELECT * FROM lol_accounts WHERE user_id = ?', [userId]);
     if (accounts.length === 0) {
       return res.status(404).json({ message: 'No linked LoL account found for this user' });
     }
-    // pick first linked account (for reducdency if there is an error/bug)
     const account = accounts[0];
     const puuid = account.puuid;
     const region = account.region;
+    const matchBaseUrl = getMatchBaseUrl(region);  // Use your helper function for dynamic base URL
 
-    // find the correct match API base URL based on the region
-    const matchBaseUrl = getMatchBaseUrl(region);
-
-    //Retrieve recent 10 match IDs using the account's puuid
     const matchIdsResponse = await axios.get(
-      `${matchBaseUrl}/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=10`,
+      `${matchBaseUrl}/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=50`,
       { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } }
     );
     const matchIds = matchIdsResponse.data;
     
-    // retrieve match data for each unique match ID
     for (const matchId of matchIds) {
       const matchResponse = await axios.get(
         `${matchBaseUrl}/lol/match/v5/matches/${matchId}`,
         { headers: { 'X-Riot-Token': process.env.RIOT_API_KEY } }
       );
       const matchData = matchResponse.data;
-      
-      // Find the participant corresponding to this puuid (participant is a player in the match)
       const participant = matchData.info.participants.find(p => p.puuid === puuid);
-      if (!participant) continue;  // Skip if not found
-      
-      // Extract the Riot champion ID and convert to string 
+      if (!participant) continue;
       const riotChampionId = participant.championId.toString();
-      
-      // Retrieve the internal champion_id from the champions table using the Riot champion ID
       const [champRows] = await pool.query(
         'SELECT champion_id FROM champions WHERE riot_champion_id = ?',
         [riotChampionId]
       );
-      if (champRows.length === 0) {
-        console.error(`Champion with riot_champion_id ${riotChampionId} not found in champions table`);
-        continue; // Skip this match if no matching champion record is found (if match data was deleted/corrupted on Riot's end)
-      }
+      if (champRows.length === 0) continue;
       const internalChampionId = champRows[0].champion_id;
-      
-      // Extract additional match data
       const queueId = matchData.info.queueId;
       const gameTimestamp = matchData.info.gameCreation;
       const gameDuration = matchData.info.gameDuration;
@@ -85,7 +66,6 @@ exports.updateMatchHistory = async (req, res) => {
       const deaths = participant.deaths;
       const assists = participant.assists;
       
-      // Insert or update the match history record including the internal champion_id's and queue_id's
       await pool.query(
         `INSERT INTO match_history 
           (lol_account_id, match_id, champion_id, queue_id, game_timestamp, game_duration, win, kills, deaths, assists, stats_json)

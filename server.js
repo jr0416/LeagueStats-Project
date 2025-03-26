@@ -38,6 +38,9 @@ app.use(session({
   cookie: { secure: process.env.NODE_ENV === "production" }
 }));
 
+//Get html files from public folder
+app.use(express.static('public'));
+
 // Test route 
 app.get('/users', async (req, res) => {
   try {
@@ -48,6 +51,70 @@ app.get('/users', async (req, res) => {
     res.status(500).send('Error retrieving users');
   }
 });
+
+// Route to get match history for the logged-in user
+app.get('/get-match-history', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: 'User not authenticated' });
+  }
+  const userId = req.session.user.userId;
+  try {
+    // Retrieve the LoL account for the logged-in user
+    const [accounts] = await pool.query('SELECT * FROM lol_accounts WHERE user_id = ?', [userId]);
+    if (accounts.length === 0) {
+      return res.status(404).json({ message: 'No linked LoL account found for this user' });
+    }
+    // select the first linked account
+    const account = accounts[0];
+    // Retrieve the match history for this account
+    const [matchRows] = await pool.query(
+      'SELECT * FROM match_history WHERE lol_account_id = ? ORDER BY game_timestamp DESC',
+      [account.lol_account_id]
+    );
+    res.json(matchRows);
+  } catch (error) {
+    console.error('Error retrieving match history:', error);
+    res.status(500).json({ message: 'Error retrieving match history' });
+  }
+});
+
+// Route to get champion data based on match history for the logged-in user
+app.get('/get-champions', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: 'User not authenticated' });
+  }
+  const userId = req.session.user.userId;
+  try {
+    // Retrieve the LoL account for the logged-in user
+    const [accounts] = await pool.query('SELECT * FROM lol_accounts WHERE user_id = ?', [userId]);
+    if (accounts.length === 0) {
+      return res.status(404).json({ message: 'No linked LoL account found for this user' });
+    }
+    const account = accounts[0];
+    const query = `
+      SELECT 
+        c.champion_name,
+        IFNULL(ROUND(SUM(m.win) / COUNT(m.match_id) * 100, 2), 0) AS win_rate,
+        CASE
+          WHEN SUM(m.deaths) = 0 THEN 'Infinity'
+          ELSE ROUND((SUM(m.kills) + SUM(m.assists)) / SUM(m.deaths), 2)
+        END AS kda
+      FROM champions c
+      LEFT JOIN match_history m 
+        ON c.champion_id = m.champion_id 
+        AND m.lol_account_id = ?
+      GROUP BY c.champion_id
+      ORDER BY win_rate DESC;
+    `;
+    const [rows] = await pool.query(query, [account.lol_account_id]);
+    res.json(rows);
+  } catch (error) {
+    console.error("Error retrieving champion stats:", error);
+    res.status(500).json({ message: 'Error retrieving champion stats', error: error.message });
+  }
+});
+
+
 
 // Authentication Routes
 app.post('/register', authController.register);

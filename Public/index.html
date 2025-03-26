@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LeagueStats Frontend</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    section, .tab {
+      margin-bottom: 30px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    input, button {
+      margin: 5px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>LeagueStats Frontend</h1>
+
+  <section id="registration">
+    <h2>Register</h2>
+    <form id="registerForm">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Register</button>
+    </form>
+  </section>
+
+  <section id="login">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </section>
+
+  <section id="linkAccount">
+    <h2>Link Riot Account (by Riot ID)</h2>
+    <form id="linkAccountForm">
+      <input type="text" name="gameName" placeholder="Game Name (e.g., PlayerName)" required>
+      <input type="text" name="tagLine" placeholder="Tag Line (e.g., NA1)" required>
+      <input type="text" name="region" placeholder="Region (e.g., na1, euw1)" required>
+      <button type="submit">Link Account</button>
+    </form>
+  </section>
+
+  <section id="updateChampions">
+    <h2>Update Champion Data</h2>
+    <button id="updateChampionsBtn">Update Champions</button>
+  </section>
+
+  <section id="updateMatchHistory">
+    <h2>Update Match History</h2>
+    <button id="updateMatchHistoryBtn">Update Match History</button>
+  </section>
+
+  <div class="tab">
+    <h2>View Match History</h2>
+    <button id="viewMatchHistoryBtn">Load Match History</button>
+    <div id="matchHistoryContainer"></div>
+  </div>
+
+  <div class="tab">
+    <h2>View Aggregated Champion Stats</h2>
+    <button id="viewChampionStatsBtn">Load Champion Stats</button>
+    <div id="championsContainer"></div>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      alert(JSON.stringify(result));
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      alert(JSON.stringify(result));
+    });
+
+    document.getElementById('linkAccountForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      const response = await fetch('/link-account-riotid', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      alert(JSON.stringify(result));
+    });
+
+    document.getElementById('updateChampionsBtn').addEventListener('click', async () => {
+      const response = await fetch('/update-champions');
+      const result = await response.json();
+      alert(JSON.stringify(result));
+    });
+
+    document.getElementById('updateMatchHistoryBtn').addEventListener('click', async () => {
+      const response = await fetch('/match-history', { method: 'POST' });
+      const result = await response.json();
+      alert(JSON.stringify(result));
+    });
+
+    document.getElementById('viewMatchHistoryBtn').addEventListener('click', async () => {
+      const response = await fetch('/get-match-history', { method: 'GET' });
+      const result = await response.json();
+      displayMatchHistory(result);
+    });
+
+    function displayMatchHistory(matches) {
+      const container = document.getElementById('matchHistoryContainer');
+      container.innerHTML = '';
+      if (!matches || matches.length === 0) {
+        container.innerHTML = '<p>No match history available.</p>';
+        return;
+      }
+      const table = document.createElement('table');
+      const header = table.insertRow();
+      const headers = ['Match ID', 'Champion ID', 'Queue ID', 'Timestamp', 'Duration', 'Win', 'Kills', 'Deaths', 'Assists'];
+      headers.forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        header.appendChild(th);
+      });
+      matches.forEach(match => {
+        const row = table.insertRow();
+        row.insertCell().textContent = match.match_id;
+        row.insertCell().textContent = match.champion_id;
+        row.insertCell().textContent = match.queue_id;
+        row.insertCell().textContent = new Date(parseInt(match.game_timestamp)).toLocaleString();
+        row.insertCell().textContent = match.game_duration + ' sec';
+        row.insertCell().textContent = match.win ? 'Yes' : 'No';
+        row.insertCell().textContent = match.kills;
+        row.insertCell().textContent = match.deaths;
+        row.insertCell().textContent = match.assists;
+      });
+      container.appendChild(table);
+    }
+
+    document.getElementById('viewChampionStatsBtn').addEventListener('click', async () => {
+      const response = await fetch('/get-champions', { method: 'GET' });
+      const result = await response.json();
+      displayChampionStats(result);
+    });
+
+    function displayChampionStats(champions) {
+      const container = document.getElementById('championsContainer');
+      container.innerHTML = '';
+      if (!champions || champions.length === 0) {
+        container.innerHTML = '<p>No champion stats available.</p>';
+        return;
+      }
+      // Sort champions by win rate descending
+      champions.sort((a, b) => b.win_rate - a.win_rate);
+      const table = document.createElement('table');
+      const header = table.insertRow();
+      const headers = ['Champion Name', 'Win Rate', 'KDA'];
+      headers.forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        header.appendChild(th);
+      });
+      champions.forEach(champion => {
+        const row = table.insertRow();
+        row.insertCell().textContent = champion.champion_name;
+        row.insertCell().textContent = champion.win_rate ? champion.win_rate + '%' : 'N/A';
+        row.insertCell().textContent = champion.kda ? champion.kda : 'N/A';
+      });
+      container.appendChild(table);
+    }
+  </script>
+</body>
+</html>
