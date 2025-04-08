@@ -2,207 +2,304 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>LeagueStats Frontend</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    section, .tab {
-      margin-bottom: 30px;
-      padding: 10px;
-      border: 1px solid #ccc;
-    }
-    input, button {
-      margin: 5px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeagueStats</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>LeagueStats Frontend</h1>
+  <header>
+    <h1>LeagueStats</h1>
+    <div id="userInfo" style="display: none;">
+      <span id="userEmail"></span>
+      <button id="logoutButton" class="btn btn-secondary">Logout</button>
+    </div>
+    <button id="loginButton" class="btn btn-primary">Login</button>
+  </header>
+  <main>
+    <section class="box">
+      <div class="section-header">
+        <h2>Match History</h2>
+        <div>
+          <button id="toggleMatchHistory" class="btn btn-secondary">Hide Table</button>
+          <button id="updateMatchHistory" class="btn btn-secondary">Update Match History</button>
+        </div>
+      </div>
+      <table id="matchHistoryTable">
+        <thead>
+          <tr>
+            <th>Match ID</th>
+            <th>Champion</th>
+            <th>Win</th>
+            <th>K/D/A</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be dynamically populated -->
+        </tbody>
+      </table>
+    </section>
+    <section class="box">
+      <div class="section-header">
+        <h2>Champion Stats</h2>
+        <div>
+          <button id="toggleChampionStats" class="btn btn-secondary">Hide Table</button>
+          <button id="refreshChampionStats" class="btn btn-secondary">Refresh Stats</button>
+        </div>
+      </div>
+      <table id="championStatsTable">
+        <thead>
+          <tr>
+            <th>Champion</th>
+            <th>Win Rate (%)</th>
+            <th>Average KDA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be dynamically populated -->
+        </tbody>
+      </table>
+    </section>
+  </main>
 
-  <section id="registration">
-    <h2>Register</h2>
-    <form id="registerForm">
-      <input type="text" name="username" placeholder="Username" required>
-      <input type="email" name="email" placeholder="Email" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Register</button>
-    </form>
-  </section>
-
-  <section id="login">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <input type="email" name="email" placeholder="Email" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-  </section>
-
-  <section id="linkAccount">
-    <h2>Link Riot Account (by Riot ID)</h2>
-    <form id="linkAccountForm">
-      <input type="text" name="gameName" placeholder="Game Name (e.g., PlayerName)" required>
-      <input type="text" name="tagLine" placeholder="Tag Line (e.g., NA1)" required>
-      <input type="text" name="region" placeholder="Region (e.g., na1, euw1)" required>
-      <button type="submit">Link Account</button>
-    </form>
-  </section>
-
-  <section id="updateChampions">
-    <h2>Update Champion Data</h2>
-    <button id="updateChampionsBtn">Update Champions</button>
-  </section>
-
-  <section id="updateMatchHistory">
-    <h2>Update Match History</h2>
-    <button id="updateMatchHistoryBtn">Update Match History</button>
-  </section>
-
-  <div class="tab">
-    <h2>View Match History</h2>
-    <button id="viewMatchHistoryBtn">Load Match History</button>
-    <div id="matchHistoryContainer"></div>
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <h2>Login</h2>
+      <form id="loginForm">
+        <label for="email">Email:</label> <!-- Label for email -->
+        <input type="email" id="email" name="email" required>
+        
+        <label for="password">Password:</label> <!-- Label for password -->
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+    </div>
   </div>
 
-  <div class="tab">
-    <h2>View Aggregated Champion Stats</h2>
-    <button id="viewChampionStatsBtn">Load Champion Stats</button>
-    <div id="championsContainer"></div>
-  </div>
+  <div id="loadingSpinner" class="spinner" style="display: none;"></div>
+</body>
+<script>
+  const loginButton = document.getElementById('loginButton');
+  const logoutButton = document.getElementById('logoutButton');
+  const userInfo = document.getElementById('userInfo');
+  const userEmail = document.getElementById('userEmail');
+  const loginModal = document.getElementById('loginModal');
+  const closeModal = document.getElementById('closeModal');
+  const updateMatchHistoryButton = document.getElementById('updateMatchHistory');
+  const matchHistoryTable = document.querySelector('#matchHistoryTable tbody');
+  const championStatsTable = document.querySelector('#championStatsTable tbody');
+  const loadingSpinner = document.getElementById('loadingSpinner');
 
-  <script>
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
-      const response = await fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      const result = await response.json();
-      alert(JSON.stringify(result));
-    });
+  // Show the login modal when the login button is clicked
+  loginButton.addEventListener('click', () => {
+    loginModal.style.display = 'block';
+  });
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
+  // Close the login modal
+  closeModal.addEventListener('click', () => {
+    loginModal.style.display = 'none';
+  });
+
+  window.addEventListener('click', (event) => {
+    if (event.target === loginModal) {
+      loginModal.style.display = 'none';
+    }
+  });
+
+  // Handle login form submission
+  document.getElementById('loginForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
       const response = await fetch('/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
-      const result = await response.json();
-      alert(JSON.stringify(result));
-    });
 
-    document.getElementById('linkAccountForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
-      const response = await fetch('/link-account-riotid', {
+      if (response.ok) {
+        const data = await response.json();
+        alert('Login successful!');
+        loginModal.style.display = 'none';
+
+        // Update UI for logged-in state
+        userEmail.textContent = `Logged in as: ${data.email}`; // Display the user's email
+        userInfo.style.display = 'flex';
+        loginButton.style.display = 'none';
+      } else {
+        const error = await response.json();
+        alert(`Login failed: ${error.message}`);
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('An error occurred during login.');
+    }
+  });
+
+  // Handle logout functionality
+  logoutButton.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/logout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
       });
-      const result = await response.json();
-      alert(JSON.stringify(result));
-    });
 
-    document.getElementById('updateChampionsBtn').addEventListener('click', async () => {
-      const response = await fetch('/update-champions');
-      const result = await response.json();
-      alert(JSON.stringify(result));
-    });
+      if (response.ok) {
+        alert('Logout successful!');
 
-    document.getElementById('updateMatchHistoryBtn').addEventListener('click', async () => {
-      const response = await fetch('/match-history', { method: 'POST' });
-      const result = await response.json();
-      alert(JSON.stringify(result));
-    });
+        // Clear the tables
+        matchHistoryTable.innerHTML = ''; // Clear match history table
+        championStatsTable.innerHTML = ''; // Clear champion stats table
 
-    document.getElementById('viewMatchHistoryBtn').addEventListener('click', async () => {
-      const response = await fetch('/get-match-history', { method: 'GET' });
-      const result = await response.json();
-      displayMatchHistory(result);
-    });
-
-    function displayMatchHistory(matches) {
-      const container = document.getElementById('matchHistoryContainer');
-      container.innerHTML = '';
-      if (!matches || matches.length === 0) {
-        container.innerHTML = '<p>No match history available.</p>';
-        return;
+        // Update UI for logged-out state
+        userInfo.style.display = 'none';
+        loginButton.style.display = 'block';
+      } else {
+        const error = await response.json();
+        alert(`Logout failed: ${error.message}`);
       }
-      const table = document.createElement('table');
-      const header = table.insertRow();
-      const headers = ['Match ID', 'Champion ID', 'Queue ID', 'Timestamp', 'Duration', 'Win', 'Kills', 'Deaths', 'Assists'];
-      headers.forEach(text => {
-        const th = document.createElement('th');
-        th.textContent = text;
-        header.appendChild(th);
-      });
-      matches.forEach(match => {
-        const row = table.insertRow();
-        row.insertCell().textContent = match.match_id;
-        row.insertCell().textContent = match.champion_id;
-        row.insertCell().textContent = match.queue_id;
-        row.insertCell().textContent = new Date(parseInt(match.game_timestamp)).toLocaleString();
-        row.insertCell().textContent = match.game_duration + ' sec';
-        row.insertCell().textContent = match.win ? 'Yes' : 'No';
-        row.insertCell().textContent = match.kills;
-        row.insertCell().textContent = match.deaths;
-        row.insertCell().textContent = match.assists;
-      });
-      container.appendChild(table);
+    } catch (error) {
+      console.error('Error during logout:', error);
+      alert('An error occurred during logout.');
     }
+  });
 
-    document.getElementById('viewChampionStatsBtn').addEventListener('click', async () => {
-      const response = await fetch('/get-champions', { method: 'GET' });
-      const result = await response.json();
-      displayChampionStats(result);
-    });
-
-    function displayChampionStats(champions) {
-      const container = document.getElementById('championsContainer');
-      container.innerHTML = '';
-      if (!champions || champions.length === 0) {
-        container.innerHTML = '<p>No champion stats available.</p>';
-        return;
+  // Check login status on page load
+  async function checkLoginStatus() {
+    try {
+      const response = await fetch('/check-login');
+      if (response.ok) {
+        const data = await response.json();
+        userEmail.textContent = `Logged in as: ${data.email}`; // Display the user's email
+        userInfo.style.display = 'flex';
+        loginButton.style.display = 'none';
       }
-      // Sort champions by win rate descending
-      champions.sort((a, b) => b.win_rate - a.win_rate);
-      const table = document.createElement('table');
-      const header = table.insertRow();
-      const headers = ['Champion Name', 'Win Rate', 'KDA'];
-      headers.forEach(text => {
-        const th = document.createElement('th');
-        th.textContent = text;
-        header.appendChild(th);
-      });
-      champions.forEach(champion => {
-        const row = table.insertRow();
-        row.insertCell().textContent = champion.champion_name;
-        row.insertCell().textContent = champion.win_rate ? champion.win_rate + '%' : 'N/A';
-        row.insertCell().textContent = champion.kda ? champion.kda : 'N/A';
-      });
-      container.appendChild(table);
+    } catch (error) {
+      console.error('Error checking login status:', error);
     }
-  </script>
-</body>
+  }
+
+  // Fetch and populate match history
+  async function fetchMatchHistory() {
+    try {
+      const response = await fetch('/get-match-history');
+      if (response.ok) {
+        const matches = await response.json();
+        const matchTable = document.querySelector('#matchHistoryTable tbody');
+        matchTable.innerHTML = matches.map(match => `
+          <tr>
+            <td>${match.match_id}</td>
+            <td>${match.champion_name}</td>
+            <td>${match.win ? 'Yes' : 'No'}</td>
+            <td>${match.kills}/${match.deaths}/${match.assists}</td>
+          </tr>
+        `).join('');
+      } else {
+        console.error('Failed to fetch match history');
+      }
+    } catch (error) {
+      console.error('Error fetching match history:', error);
+    }
+  }
+
+  // Update match history when the button is clicked
+  updateMatchHistoryButton.addEventListener('click', async () => {
+    try {
+      // Show the loading spinner
+      loadingSpinner.style.display = 'block';
+
+      const response = await fetch('/match-history', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        alert('Match history updated successfully!');
+        fetchMatchHistory(); // Refresh the match history table
+      } else {
+        const error = await response.json();
+        alert(`Failed to update match history: ${error.message}`);
+      }
+    } catch (error) {
+      console.error('Error updating match history:', error);
+      alert('An error occurred while updating match history.');
+    } finally {
+      // Hide the loading spinner
+      loadingSpinner.style.display = 'none';
+    }
+  });
+
+  // Initial data fetch
+  fetchMatchHistory();
+  checkLoginStatus();
+
+  const toggleMatchHistoryButton = document.getElementById('toggleMatchHistory');
+  const matchHistoryTableElement = document.getElementById('matchHistoryTable');
+
+  // Toggle the visibility of the match history table
+  toggleMatchHistoryButton.addEventListener('click', () => {
+    if (matchHistoryTableElement.style.display === 'none') {
+      matchHistoryTableElement.style.display = 'table';
+      toggleMatchHistoryButton.textContent = 'Hide Table';
+    } else {
+      matchHistoryTableElement.style.display = 'none';
+      toggleMatchHistoryButton.textContent = 'Show Table';
+    }
+  });
+
+  const toggleChampionStatsButton = document.getElementById('toggleChampionStats');
+  const championStatsTableElement = document.getElementById('championStatsTable');
+
+  // Toggle the visibility of the champion stats table
+  toggleChampionStatsButton.addEventListener('click', () => {
+    if (championStatsTableElement.style.display === 'none') {
+      championStatsTableElement.style.display = 'table';
+      toggleChampionStatsButton.textContent = 'Hide Table';
+    } else {
+      championStatsTableElement.style.display = 'none';
+      toggleChampionStatsButton.textContent = 'Show Table';
+    }
+  });
+
+  const refreshChampionStatsButton = document.getElementById('refreshChampionStats');
+
+  // Fetch and populate champion stats
+  async function fetchChampionStats() {
+    try {
+      const response = await fetch('/get-champions');
+      if (response.ok) {
+        const champions = await response.json();
+
+        // Filter out champions with null KDA
+        const filteredChampions = champions.filter(champion => champion.kda !== null);
+
+        const championTable = document.querySelector('#championStatsTable tbody');
+        championTable.innerHTML = filteredChampions.map(champion => `
+          <tr>
+            <td>${champion.champion_name}</td>
+            <td>${champion.win_rate}%</td>
+            <td>${champion.kda}</td>
+          </tr>
+        `).join('');
+      } else {
+        console.error('Failed to fetch champion stats');
+      }
+    } catch (error) {
+      console.error('Error fetching champion stats:', error);
+    }
+  }
+
+  // Refresh champion stats when the button is clicked
+  refreshChampionStatsButton.addEventListener('click', fetchChampionStats);
+
+  // Initial data fetch
+  fetchChampionStats();
+</script>
 </html>

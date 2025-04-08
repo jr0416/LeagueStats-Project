@@ -35,7 +35,7 @@ exports.updateMatchHistory = async (req, res) => {
     const account = accounts[0];
     const puuid = account.puuid;
     const region = account.region;
-    const matchBaseUrl = getMatchBaseUrl(region);  // Use your helper function for dynamic base URL
+    const matchBaseUrl = getMatchBaseUrl(region);  // Use my helper function for dynamic base URL
 
     const matchIdsResponse = await axios.get(
       `${matchBaseUrl}/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=50`,

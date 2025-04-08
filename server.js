@@ -11,8 +11,6 @@ const { pool } = require('./db');  // Import from db.js
 const app = express();
 const port = process.env.PORT || 3000;
 
-
-
 // Test the connection 
 async function testConnection() {
   try {
@@ -57,20 +55,35 @@ app.get('/get-match-history', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ message: 'User not authenticated' });
   }
+
   const userId = req.session.user.userId;
+
   try {
     // Retrieve the LoL account for the logged-in user
     const [accounts] = await pool.query('SELECT * FROM lol_accounts WHERE user_id = ?', [userId]);
     if (accounts.length === 0) {
       return res.status(404).json({ message: 'No linked LoL account found for this user' });
     }
-    // select the first linked account
+
     const account = accounts[0];
-    // Retrieve the match history for this account
-    const [matchRows] = await pool.query(
-      'SELECT * FROM match_history WHERE lol_account_id = ? ORDER BY game_timestamp DESC',
-      [account.lol_account_id]
-    );
+
+    // Query to join match_history with champions table to get champion names
+    const query = `
+      SELECT 
+        m.match_id,
+        c.champion_name,
+        m.win,
+        m.kills,
+        m.deaths,
+        m.assists,
+        m.game_timestamp
+      FROM match_history m
+      JOIN champions c ON m.champion_id = c.champion_id
+      WHERE m.lol_account_id = ?
+      ORDER BY m.game_timestamp DESC;
+    `;
+    const [matchRows] = await pool.query(query, [account.lol_account_id]);
+
     res.json(matchRows);
   } catch (error) {
     console.error('Error retrieving match history:', error);
@@ -114,19 +127,17 @@ app.get('/get-champions', async (req, res) => {
   }
 });
 
-
-
 // Authentication Routes
 app.post('/register', authController.register);
 app.post('/login', authController.login);
 app.post('/logout', authController.logout);
+app.get('/check-login', authController.checkLogin);
 
 // Champion Data Integration Route
 app.get('/update-champions', championController.updateChampions);
 
 // Match History Integration Route
 app.post('/match-history', matchHistoryController.updateMatchHistory);
-
 
 // Route to link a League account
 app.post('/link-account-riotid', lolAccountController.linkAccountByRiotId);
