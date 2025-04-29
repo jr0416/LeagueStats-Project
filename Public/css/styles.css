@@ -1,0 +1,1489 @@
+container/* Match History Styles */
+.match-history-controls {
+    width: 100%;  /* Changed from 45% to match table width */
+    position: absolute;  /* Changed from relative */
+    left: 0;
+    top: 0;
+    padding: 15px 20px;
+    background-color: #2c3e50;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px 10px 0 0;
+    margin: 0;
+    border-bottom: none;
+    margin-bottom: -1px;
+    box-sizing: border-box;
+    z-index: 1;
+    height: 50px; /* Fixed height */
+    gap: 10px;
+}
+
+/* Left side containers */
+.match-history-container {
+    width: calc(50% - 30px);  /* 50% minus margin/padding */
+    position: absolute;
+    left: 20px;
+    top: 210px;  /* Changed from 280px to match original header position */
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    padding: 0; /* Remove padding */
+    margin-bottom: 20px;
+}
+
+.match-history-table-wrapper {
+    width: 100%;
+    padding: 0;
+    max-height: calc(100vh - 330px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    margin: 0;
+    position: relative; /* Add this */
+    top: 50px; /* Height of the controller */
+}
+
+.match-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: transparent;
+    margin: 0;
+    table-layout: fixed;
+    border-spacing: 0;
+}
+
+.match-history-table thead {
+    width: 100%;
+}
+
+/* Make table cells have consistent padding */
+.match-history-table th,
+.match-history-table td {
+    padding: 15px 20px;
+    box-sizing: border-box;
+}
+
+/* Remove the old header styles */
+
+/* Update the h2 color in match-history-header */
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Adjust existing styles if needed */
+.match-row {
+    transition: background-color 0.3s;
+    cursor: pointer;
+    background-color: rgba(32, 32, 32, 0.9);
+    border-bottom: 1px solid #444;
+}
+
+.match-row:hover {
+    background-color: rgba(40, 40, 40, 0.9);
+}
+
+.detailed-stats {
+    background-color: #f8f9fa;
+    display: none;
+}
+
+.detailed-stats.expanded {
+    display: table-row;
+}
+
+.match-details {
+    background-color: rgba(24, 24, 24, 0.95);
+    padding: 15px;
+}
+
+.match-details.hidden {
+    display: none;
+}
+
+.expand-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Make sure the stats grid layout works within the container */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 15px;
+}
+
+/* Button styling */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #34495e;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #2c3e50;
+}
+
+/* Champion Stats Styles */
+
+/* Right side containers */
+.champion-stats-container {
+    width: calc(50% - 30px);
+    position: absolute;
+    right: 20px;
+    top: 230px;
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    padding: 50px 0 0 0;
+    margin-bottom: 20px;
+    height: auto; /* Remove fixed height to match match history */
+    display: flex;
+    flex-direction: column;
+}
+
+.champion-stats-controls {
+    width: 100%;  /* Changed from 45% to match table width */
+    position: absolute;  /* Change from relative to absolute */
+    left: 0;
+    top: 0;
+    padding: 15px 20px;
+    background-color: #2c3e50;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px 10px 0 0;
+    margin: 0;
+    border-bottom: none;
+    margin-bottom: -1px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.champion-stats-table-wrapper {
+    width: 100%;
+    padding: 0;
+    max-height: calc(100vh - 330px); /* Match match-history-table-wrapper height */
+    overflow-y: auto;
+    box-sizing: border-box;
+    margin: 0;
+    position: relative;
+    top: 0;
+}
+
+.champion-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: transparent;
+    margin: 0;
+    table-layout: fixed;
+    border-spacing: 0;
+    min-height: calc(100% - 50px); /* Fill the wrapper height minus header */
+}
+
+.champion-stats-table th {
+    padding: 15px 20px;
+    background-color: #2c3e50;
+    color: white;
+    border-top: none;
+    width: auto;
+}
+
+.champion-stats-table td {
+    padding: 10px 20px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: auto;
+}
+
+/* Header Text */
+h2 {
+    margin: 0;
+    color: white;
+}
+
+/* Header Container Styles */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    flex: 1;
+    text-align: center;
+}
+
+.logo h1 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.auth-container {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background-color: #2c3e50;  /* Changed to match other headers */
+    color: white;  /* Added to make text readable on dark background */
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.auth-container #userInfo,
+.auth-container .auth-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.auth-container #userEmail {
+    margin-right: 10px;
+}
+
+.account-links {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Update the link-account-container styles */
+.link-account-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    position: absolute;
+    right: 20px;
+    top: 90px;
+    background-color: #2c3e50;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style both buttons */
+#linkAccountButton,
+#unlinkAccountButton {
+    display: inline-block !important; /* Force display */
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+}
+
+#linkAccountButton {
+    background-color: #34495e;
+    color: white;
+}
+
+#unlinkAccountButton {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Keep your existing danger button styles */
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* Remove these rules completely */
+#unlinkAccountButton {
+    display: none;
+}
+
+#linkAccountButton {
+    display: block;
+}
+
+.account-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Update modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #2c3e50;
+    color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+.close:hover,
+.close:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Ensure proper form styling within modal */
+.modal-content form {
+    margin-top: 20px;
+}
+
+.modal-content .form-group {
+    margin-bottom: 15px;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.modal-content label {
+    color: white;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: white;
+}
+
+/* Update layout for main sections */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Player improvement resources styling */
+
+/* Left side containers */
+#recommendationsSection {
+    width: calc(50% - 30px);  /* 50% minus margin/padding */
+    position: absolute;
+    left: 20px;
+    top: 950px;  /* Increased this value to move it down */
+    background-color: #2c3e50;
+    border-radius: 10px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Right side containers */
+#summonerProfileSection {
+    width: calc(50% - 30px);  /* 50% minus margin/padding */
+    position: absolute;
+    right: 20px;
+    top: 950px;  /* Same top value as recommendationsSection */
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Box styling for sections */
+.box {
+    background-color: #2c3e50;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Summoner Profile Styles */
+#summonerProfileContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.queue-card {
+    background-color: #2c3e50;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.queue-card h3 {
+    margin: 0 0 10px 0;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+.rank-info {
+    margin-bottom: 10px;
+}
+
+.tier {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: black;
+}
+
+.lp {
+    margin-left: 10px;
+    color: #ddd;
+}
+
+.win-loss {
+    display: flex;
+    gap: 10px;
+    color: #ddd;
+}
+
+.wins {
+    color: #4CAF50;
+}
+
+.losses {
+    color: #f44336;
+}
+
+.win-rate {
+    color: #fff;
+}
+
+.queue-header h3 {
+    margin: 0 0 10px 0;
+    color: Black;
+    font-size: 1.2em;
+}
+
+.rank-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.tier-rank {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.lp {
+    color: #ddd;
+}
+
+.stats-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.win-loss {
+    display: flex;
+    gap: 10px;
+}
+
+.wins {
+    color: #4CAF50;
+}
+
+.losses {
+    color: #f44336;
+}
+
+.win-rate {
+    color: #ddd;
+}
+
+.promo-series {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.promo-game {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.promo-game.win {
+    background-color: #4CAF50;
+}
+
+.promo-game.loss {
+    background-color: #f44336;
+}
+
+.promo-game.pending {
+    background-color: #666;
+}
+
+/* Summoner Profile Styles */
+.summoner-info {
+    background-color: #2c3e50;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.summoner-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid;
+}
+
+.summoner-details h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.5em;
+}
+
+.level {
+    color: #ddd;
+    font-size: 0.9em;
+}
+
+.mastery-section {
+    background-color: #2c3e50;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.mastery-section h3 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.mastery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.champion-mastery-card {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.champion-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 25%;
+    margin-right: 10px;
+}
+
+.mastery-info {
+    flex-grow: 1;
+}
+
+.champion-name {
+    color: #fff;
+    font-weight: bold;
+    display: block;
+}
+
+.mastery-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.mastery-level {
+    color: gold;
+    font-size: 0.9em;
+}
+
+.mastery-points {
+    color: #ddd;
+    font-size: 0.9em;
+}
+
+/* Add or update the match history container styles */
+.match-history-container {
+    padding-top: 60px; /* Adds space below the header */
+    margin-top: 20px; /* Additional margin from the top */
+}
+
+/* If you're using a table container, you can also adjust that */
+.table-container {
+    margin-top: 20px;
+    padding: 15px;
+}
+
+/* Build Path Styles */
+.build-path {
+    padding: 5px !important;
+}
+
+.item-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.items-row {
+    display: flex;
+    gap: 2px;
+}
+
+.item-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+}
+
+/* Add hover effect for items */
+.item-icon:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+/* Add these to your existing styles */
+.build-path {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.items-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+}
+
+.item-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.item-icon:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+
+.champion-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.victory {
+    color: #28a745;
+}
+
+.defeat {
+    color: #dc3545;
+}
+
+.match-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.stats-row p {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+/* Remove any padding/margin from these classes */
+.table-container {
+    margin: 0;
+    padding: 0;
+}
+
+.match-details-content {
+    padding: 15px;
+}
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body Styling */
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+    margin: 0;
+    background: linear-gradient(to bottom, #1e3c72, #2a5298);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: #000;
+  }
+  
+  /* Header Styling */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    margin-bottom: 2rem;
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+  }
+  
+  header .btn-primary {
+    background-color: #007bff; /* Blue */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  header .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Main Content */
+  main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+  }
+  
+  /* Box Styling */
+  .box {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Table Styling */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Champion Stats Table Styling */
+  #championStatsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  #championStatsTable th, #championStatsTable td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  #championStatsTable th {
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+  }
+  
+  #championStatsTable tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  #championStatsTable tr:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Match History Section */
+  #matchHistorySection {
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1200px;
+  }
+  
+  #matchHistoryTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  #matchHistoryTable th, #matchHistoryTable td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  #matchHistoryTable th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  #matchHistoryTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  #matchHistoryTable tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Section Header Styling */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  /* Buttons inside section headers */
+  .section-header .btn {
+    margin-left: 10px; /* Add spacing between buttons */
+  }
+  
+  .section-header h2 {
+    margin: 0;
+  }
+  
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-primary {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .btn-secondary {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .btn-danger {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #45a049;
+  }
+  
+  /* Link and Unlink Account Sections */
+  #linkAccountSection, #unlinkAccountSection {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  #linkAccountSection h2, #unlinkAccountSection h2 {
+    margin-bottom: 15px;
+    color: #fff;
+  }
+  
+  #linkAccountSection form label, #unlinkAccountSection button {
+    display: block;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+  
+  #linkAccountSection form input, #linkAccountSection form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  #linkAccountSection form button, #unlinkAccountSection button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #linkAccountSection form button:hover, #unlinkAccountSection button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Modal Styling */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+  }
+  
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal-content h2 {
+    margin-top: 0;
+    text-align: center;
+  }
+  
+  .modal-content label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .modal-content .btn {
+    width: 100%;
+  }
+  
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+  }
+  
+  /* User Info Styling */
+  #userInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  #userEmail {
+    font-size: 1rem;
+    color: #fff;
+  }
+  
+  /* Loading Spinner Styling */
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 10px auto;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Styling for the auth buttons container */
+  .auth-buttons {
+    display: flex;
+    gap: 10px; /* Adds a small space between the buttons */
+  }
+  
+  .auth-buttons .btn {
+    margin: 0; /* Remove any default margins */
+  }
+  
+  /* Recommendations Container Styling */
+  #recommendationsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .recommendation {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .recommendation h3 {
+    margin-bottom: 10px;
+    color: #fff;
+  }
+  
+  .recommendation p {
+    margin-bottom: 15px;
+    color: #ccc;
+  }
+  
+  .recommendation iframe {
+    width: 100%;
+    max-width: 560px;
+    height: 315px;
+    border: none;
+    border-radius: 10px;
+  }
+  
+  .recommendation a {
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: inline-block;
+  }
+  
+  .recommendation a:hover {
+    background-color: #0056b3;
+  }
+  
+  #summonerProfileContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+  
+  .summoner-profile {
+    text-align: center;
+  }
+  
+  .profile-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+  
+  .ranked-stat {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .match-history-container {
+    position: absolute;
+    width: calc(50% - 30px);
+    left: 20px;
+    top: 160px; /* Align with the top of the match history box */
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 0;
+    height: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Match History Controls */
+  .match-history-controls {
+    width: 100%;
+    height: 50px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2;
+    gap: 10px;
+  }
+  
+  /* Match History Controls Styling */
+  .match-history-controls .button-group {
+      display: flex;
+      gap: 10px;
+  }
+  
+  .match-history-controls button {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+  }
+  
+  .match-history-controls button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .match-history-controls button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+  }
+  
+  .match-history-controls h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: normal;
+  }
+  
+  /* Match History Table */
+  .match-history-table-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 0 0 10px 10px;
+  }
+  
+  .match-history-table-wrapper.hidden {
+    display: none;
+  }
+  
+  .match-history-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #2c3e50;
+      color: white;
+  }
+  
+  .match-history-table thead th {
+      position: sticky;
+      top: 0;
+      background-color: #2c3e50;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      z-index: 1;
+      font-weight: normal;
+  }
+  
+  .match-history-table th {
+      background-color: #2c3e50;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: normal;
+  }
+  
+  .match-history-table td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: #2c3e50;
+      color: white;
+  }
+  
+  .match-history-table tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Keep win/loss colors */
+  .match-history-table .win {
+      color: #4CAF50;
+      font-weight: bold;
+  }
+  
+  .match-history-table .loss {
+      color: #f44336;
+      font-weight: bold;
+  }
+  
+  .match-table th {
+    background-color: rgba(44, 44, 44, 0.9);
+  }
+  
+  .match-table th, .match-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .match-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .match-row:hover {
+    background-color: rgba(42, 42, 42, 0.9);
+  }
+  
+  .expand-button {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 5px;
+      font-size: 12px;
+  }
+  
+  .expand-button:hover {
+      opacity: 0.8;
+  }
+  
+  .detailed-stats {
+      display: none;
+      background-color: #2c3e50;
+      color: white;
+  }
+  
+  .detailed-stats.expanded {
+      display: table-row;
+  }
+  
+  .detailed-stats.hidden {
+    display: none;
+  }
+  
+  .detailed-stats.expanded {
+    display: table-row;
+  }
+  
+  .detailed-stats td {
+    padding: 15px;
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 15px;
+  }
+  
+  .stat-item {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    text-align: center;
+    color: white;
+  }
+  
+  .build-path {
+    grid-column: span 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .win {
+    color: #4CAF50;
+    font-weight: bold;
+  }
+  
+  .loss {
+    color: #f44336;
+    font-weight: bold;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .match-history-container {
+      width: 100%;
+      margin-left: 0;
+    }
+  
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+.match-history-container-box {
+    background-color: var(--box-bg-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    left: 20px;
+    top: 160px;
+    width: calc(50% - 30px); /* Takes up half the screen minus margins */
+    height: 600px; /* Match your existing container height */
+    display: flex;
+    flex-direction: column;
+}
+
+.match-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px 10px 0 0;
+}
+
+.match-history-content {
+    overflow-y: auto;
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 0 0 10px 10px;
+}
+
+/* Update responsive design */
+@media (max-width: 768px) {
+    .match-history-container-box {
+        width: calc(100% - 40px);
+        left: 20px;
+        height: auto;
+        position: relative;
+        top: 0;
+    }
+}

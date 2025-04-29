@@ -1,940 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LeagueStats</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeagueStats</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body style="background-color: #32CD32;">
-  <header>
-    <h1>LeagueStats</h1>
-    <div id="userInfo">
-      <span id="userEmail"></span>
-      <button id="logoutButton" class="btn btn-secondary">Logout</button>
-    </div>
-    <div class="auth-buttons">
-      <button id="registerButton" class="btn btn-secondary">Register</button>
-      <button id="loginButton" class="btn btn-primary">Login</button>
-    </div>
-  </header>
-  <main>
-    <section class="box">
-      <div class="section-header">
-        <h2>Match History</h2>
-        <div>
-          <button id="toggleMatchHistory" class="btn btn-secondary">Hide Table</button>
-          <button id="updateMatchHistory" class="btn btn-secondary">Update Match History</button>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>LeagueStats</h1>
+            </div>
+            <div class="auth-container">
+                <div id="userInfo">
+                    <span id="userEmail"></span>
+                    <button id="logoutButton" class="btn btn-secondary">Logout</button>
+                </div>
+                <div class="auth-buttons">
+                    <button id="registerButton" class="btn btn-secondary">Register</button>
+                    <button id="loginButton" class="btn btn-primary">Login</button>
+                </div>
+            </div>
+            <div class="link-account-container">
+                <button id="linkAccountButton" class="btn btn-secondary">Link LoL Account</button>
+                <button id="unlinkAccountButton" class="btn btn-danger">Unlink Account</button>
+            </div>
         </div>
-      </div>
-      <table id="matchHistoryTable">
-        <thead>
-          <tr>
-            <th>Match ID</th>
-            <th>Champion</th>
-            <th>Queue Type</th>
-            <th>Win</th>
-            <th>Kills</th>
-            <th>Deaths</th>
-            <th>Assists</th>
-            <th>Total Damage Dealt</th>
-            <th>Total Damage Taken</th>
-            <th>Total Healing</th>
-            <th>Wards Placed</th>
-            <th>Wards Destroyed</th>
-            <th>Vision Score</th>
-            <th>Gold Earned</th>
-            <th>Gold Spent</th>
-            <th>Dragons Killed</th>
-            <th>Barons Killed</th>
-            <th>Turrets Destroyed</th>
-            <th>Largest Killing Spree</th>
-            <th>Largest Multi-Kill</th>
-            <th>CS per Minute</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Match history rows will be dynamically added here -->
-        </tbody>
-      </table>
-    </section>
-    <section class="box">
-      <div class="section-header">
-        <h2>Champion Stats</h2>
-        <div>
-          <button id="toggleChampionStats" class="btn btn-secondary">Hide Table</button>
-          <button id="refreshChampionStats" class="btn btn-secondary">Refresh Stats</button>
+    </header>
+
+    <!-- This should be after your header but before main content -->
+    <div id="linkAccountModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Link League Account</h2>
+            <form id="linkAccountForm">
+                <div class="form-group">
+                    <label for="gameName">Game Name:</label>
+                    <input type="text" id="gameName" required>
+                </div>
+                <div class="form-group">
+                    <label for="tagLine">Tag Line:</label>
+                    <input type="text" id="tagLine" required>
+                </div>
+                <div class="form-group">
+                    <label for="region">Region:</label>
+                    <select id="region" required>
+                        <option value="">Select Region</option>
+                        <option value="na1">North America</option>
+                        <option value="euw1">Europe West</option>
+                        <option value="eune1">Europe Nordic & East</option>
+                        <option value="kr">Korea</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Link Account</button>
+            </form>
         </div>
-      </div>
-      <table id="championStatsTable">
-        <thead>
-          <tr>
-            <th>Champion</th>
-            <th>Win Rate (%)</th>
-            <th>Average KDA</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Data will be dynamically populated -->
-        </tbody>
-      </table>
-    </section>
-    <!-- Match History Section -->
-    <section id="matchHistorySection" style="display: none;">
-      <h2>Match History</h2>
-      <button id="updateMatchHistoryButton" class="btn btn-primary">Update Match History</button>
-      <table id="matchHistoryTable">
-        <thead>
-          <tr>
-            <th>Match ID</th>
-            <th>Champion</th>
-            <th>Queue Type</th>
-            <th>Win</th>
-            <th>Kills</th>
-            <th>Deaths</th>
-            <th>Assists</th>
-            <th>Total Damage Dealt</th>
-            <th>Total Damage Taken</th>
-            <th>Total Healing</th>
-            <th>Wards Placed</th>
-            <th>Wards Destroyed</th>
-            <th>Vision Score</th>
-            <th>Gold Earned</th>
-            <th>Gold Spent</th>
-            <th>Dragons Killed</th>
-            <th>Barons Killed</th>
-            <th>Turrets Destroyed</th>
-            <th>Largest Killing Spree</th>
-            <th>Largest Multi-Kill</th>
-            <th>CS per Minute</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Match history rows will be dynamically added here -->
-        </tbody>
-      </table>
-    </section>
-    <section id="linkAccountSection">
-      <h2>Link Your League of Legends Account</h2>
-      <form id="linkAccountForm">
-        <label for="gameName">Game Name:</label>
-        <input type="text" id="gameName" name="gameName" required>
-        
-        <label for="tagLine">Tag Line:</label>
-        <input type="text" id="tagLine" name="tagLine" required>
-        
-        <label for="region">Region:</label>
-        <select id="region" name="region" required>
-          <option value="na1">North America</option>
-          <option value="euw1">Europe West</option>
-          <option value="eune1">Europe Nordic & East</option>
-          <option value="kr">Korea</option>
-          <option value="jp">Japan</option>
-        </select>
-        
-        <button type="submit" class="btn btn-primary">Link Account</button>
-      </form>
-    </section>
-
-    <section id="unlinkAccountSection">
-      <h2>Unlink Your League of Legends Account</h2>
-      <button id="unlinkAccountButton" class="btn btn-danger">Unlink Account</button>
-    </section>
-
-    <section id="recommendationsSection" class="box">
-      <h2>Player Improvement Resources</h2>
-      <div id="recommendationsContainer">
-        <!-- Recommendations will be dynamically added here -->
-      </div>
-    </section>
-
-    <section id="summonerProfileSection" class="box">
-      <h2>Summoner Profile</h2>
-      <div id="summonerProfileContainer">
-        <!-- Summoner profile stats will be dynamically added here -->
-      </div>
-    </section>
-  </main>
-
-  <!-- Login Modal -->
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <h2>Login</h2>
-      <form id="loginForm">
-        <label for="email">Email:</label> <!-- Label for email -->
-        <input type="email" id="email" name="email" required>
-        
-        <label for="password">Password:</label> <!-- Label for password -->
-        <input type="password" id="password" name="password" required>
-        
-        <button type="submit" class="btn btn-primary">Login</button>
-      </form>
-      <a href="#" id="forgotPasswordLink">Forgot Password?</a> <!-- Added link -->
     </div>
-  </div>
 
-  <!-- Register Modal -->
-  <div id="registerModal" class="modal">
-    <div class="modal-content">
-      <span id="closeRegisterModal" class="close">&times;</span>
-      <h2>Register</h2>
-      <form id="registerForm">
-        <label for="registerUsername">Username:</label>
-        <input type="text" id="registerUsername" name="username" required>
-        
-        <label for="registerEmail">Email:</label>
-        <input type="email" id="registerEmail" name="email" required>
-        
-        <label for="registerPassword">Password:</label>
-        <input type="password" id="registerPassword" name="password" required>
-        
-        <button type="submit" class="btn btn-primary">Register</button>
-      </form>
+    <main>
+        <!-- Match History Section -->
+        <div class="match-history-container-box">
+            <div class="match-history-header">
+                <h2>Match History</h2>
+                <div class="match-history-controls">
+                    <div class="button-group">
+                        <button id="toggleMatchHistory" class="btn btn-secondary">Hide Table</button>
+                        <button id="updateMatchHistory" class="btn btn-secondary">Update Match History</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="match-history-content">
+                <table id="matchHistoryTable">
+                    <thead>
+                        <tr>
+                            <th></th> <!-- For expand button -->
+                            <th>Champion</th>
+                            <th>Queue</th>
+                            <th>Result</th>
+                            <th>KDA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matchHistoryBody">
+                        <!-- Match rows will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Champion Stats Section -->
+        <div class="champion-stats-container">
+            <div class="champion-stats-controls">
+                <h2>Champion Stats</h2>
+                <div class="button-group">
+                    <button id="toggleChampionStats" class="btn btn-secondary">Hide Table</button>
+                    <button id="refreshChampionStats" class="btn btn-secondary">Refresh Stats</button>
+                </div>
+            </div>
+            <div class="champion-stats-table-wrapper">
+                <table id="championStatsTable" class="champion-stats-table">
+                    <thead>
+                        <tr>
+                            <th>Champion</th>
+                            <th>Games</th>
+                            <th>Win Rate</th>
+                            <th>KDA</th>
+                            <th>CS/min</th>
+                        </tr>
+                    </thead>
+                    <tbody id="championStatsBody">
+                        <!-- JavaScript will populate this -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Player Improvement Resources Section -->
+        <section id="recommendationsSection" class="box">
+            <h2>Player Improvement Resources</h2>
+            <div id="recommendationsContainer">
+                <!-- Recommendations content -->
+            </div>
+        </section>
+
+        <!-- Summoner Profile Section -->
+        <section id="summonerProfileSection" class="box">
+            <h2>Summoner Profile</h2>
+            <div id="summonerProfileContainer">
+                <!-- Summoner profile stats will be dynamically added here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Link Account Modal -->
+    <div id="linkAccountModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Link League of Legends Account</h2>
+            <form id="linkAccountForm">
+                <div class="form-group">
+                    <label for="gameName">Game Name:</label>
+                    <input type="text" id="gameName" required placeholder="Your LoL game name">
+                </div>
+                <div class="form-group">
+                    <label for="tagLine">Tag Line:</label>
+                    <input type="text" id="tagLine" required placeholder="Your tag (e.g., NA1)">
+                </div>
+                <div class="form-group">
+                    <label for="region">Region:</label>
+                    <select id="region" required>
+                        <option value="">Select Region</option>
+                        <option value="na1">North America</option>
+                        <option value="euw1">Europe West</option>
+                        <option value="eune1">Europe Nordic & East</option>
+                        <option value="kr">Korea</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Link Account</button>
+            </form>
+        </div>
     </div>
-  </div>
 
-  <div id="loadingSpinner" class="spinner" style="display: none;"></div>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" required>
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" required>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="button" class="btn btn-secondary" id="forgotPassword">Forgot Password?</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Register</h2>
+            <form id="registerForm">
+                <label for="registerEmail">Email:</label>
+                <input type="email" id="registerEmail" required>
+                <label for="registerPassword">Password:</label>
+                <input type="password" id="registerPassword" required>
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" required>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="loadingSpinner" class="spinner" style="display: none;"></div>
+
+    <!-- Add this before your other scripts -->
+    <script>
+        // Fetch champion data from Data Dragon
+        fetch('https://ddragon.leagueoflegends.com/cdn/14.8.1/data/en_US/champion.json')
+            .then(response => response.json())
+            .then(data => {
+                const championData = {};
+                Object.values(data.data).forEach(champion => {
+                    championData[champion.key] = {
+                        name: champion.name,
+                        key: champion.id
+                    };
+                });
+                window.championData = championData;
+            })
+            .catch(error => console.error('Error loading champion data:', error));
+    </script>
+
+    <!-- Scripts -->
+    <script src="/js/auth.js"></script>
+    <script src="/js/matchHistory.js"></script>
+    <script src="/js/championStats.js"></script>
+    <script src="/js/account.js"></script>
+    <script src="/js/recommendations.js"></script>
+    <script src="/js/summonerProfile.js"></script>
 </body>
-<script>
-  const loginButton = document.getElementById('loginButton');
-  const logoutButton = document.getElementById('logoutButton');
-  const userInfo = document.getElementById('userInfo');
-  const userEmail = document.getElementById('userEmail');
-  const loginModal = document.getElementById('loginModal');
-  const closeModal = document.getElementById('closeModal');
-  const updateMatchHistoryButton = document.getElementById('updateMatchHistory');
-  const matchHistoryTable = document.querySelector('#matchHistoryTable tbody');
-  const championStatsTable = document.querySelector('#championStatsTable tbody');
-  const loadingSpinner = document.getElementById('loadingSpinner');
-
-  // Show the login modal when the login button is clicked
-  loginButton.addEventListener('click', () => {
-    loginModal.style.display = 'block';
-  });
-
-  // Close the login modal
-  closeModal.addEventListener('click', () => {
-    loginModal.style.display = 'none';
-  });
-
-  window.addEventListener('click', (event) => {
-    if (event.target === loginModal) {
-      loginModal.style.display = 'none';
-    }
-  });
-
-  // Handle login form submission
-  document.getElementById('loginForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    try {
-      const response = await fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert('Login successful!');
-        loginModal.style.display = 'none';
-
-        // Update UI for logged-in state
-        userEmail.textContent = `Logged in as: ${data.email}`;
-        userInfo.style.display = 'flex';
-        loginButton.style.display = 'none';
-
-        // Check login and linked account status immediately
-        await checkLoginAndLinkedAccount();
-      } else {
-        const error = await response.json();
-        alert(`Login failed: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-      alert('An error occurred during login.');
-    }
-  });
-
-  // Handle "Forgot Password" link click
-  document.getElementById('forgotPasswordLink').addEventListener('click', () => {
-    const email = prompt('Enter your email address to reset your password:');
-    if (email) {
-      fetch('/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.message) {
-            alert(data.message);
-          } else {
-            alert('An error occurred. Please try again.');
-          }
-        })
-        .catch(err => {
-          console.error('Error:', err);
-          alert('An error occurred. Please try again.');
-        });
-    }
-  });
-
-  // Handle logout functionality
-  logoutButton.addEventListener('click', async () => {
-    try {
-      const response = await fetch('/logout', {
-        method: 'POST',
-      });
-
-      if (response.ok) {
-        alert('Logout successful!');
-
-        // Clear the tables
-        matchHistoryTable.innerHTML = ''; // Clear match history table
-        championStatsTable.innerHTML = ''; // Clear champion stats table
-
-        // Update UI for logged-out state
-        userInfo.style.display = 'none';
-        loginButton.style.display = 'block';
-      } else {
-        const error = await response.json();
-        alert(`Logout failed: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error during logout:', error);
-      alert('An error occurred during logout.');
-    }
-  });
-
-  // Check if the user is logged in and update the UI
-  async function checkLoginStatus() {
-    try {
-      const response = await fetch('/check-login');
-      if (response.ok) {
-        const data = await response.json();
-        console.log('User logged in:', data); // Debugging log
-
-        userEmail.textContent = `Logged in as: ${data.email}`;
-        userInfo.style.display = 'flex';
-        loginButton.style.display = 'none';
-
-        // Show the "Link Account" and "Unlink Account" sections
-        document.getElementById('linkAccountSection').style.display = 'block';
-        document.getElementById('unlinkAccountSection').style.display = 'block';
-      } else {
-        console.warn('User not logged in'); // Debugging log
-
-        // Hide the "Link Account" and "Unlink Account" sections
-        document.getElementById('linkAccountSection').style.display = 'none';
-        document.getElementById('unlinkAccountSection').style.display = 'none';
-
-        // Update UI for logged-out state
-        userInfo.style.display = 'none';
-        loginButton.style.display = 'block';
-      }
-    } catch (error) {
-      console.error('Error checking login status:', error);
-    }
-  }
-
-  // Call the function to check login status on page load
-  document.addEventListener('DOMContentLoaded', checkLoginStatus);
-
-  // Check if the user has a linked League of Legends account
-  async function checkLinkedAccount() {
-    try {
-      const response = await fetch('/get-linked-account', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (response.ok) {
-        const account = await response.json();
-        console.log('Linked account found:', account);
-        console.log('Linked Account ID:', account.lol_account_id);
-
-        // Update UI for linked account
-        userEmail.textContent += ` (Summoner: ${account.summoner_name})`;
-        document.getElementById('linkAccountSection').style.display = 'none';
-        document.getElementById('unlinkAccountSection').style.display = 'block';
-      } else {
-        console.warn('No linked account found');
-
-        // Update UI for unlinked account
-        document.getElementById('linkAccountSection').style.display = 'block';
-        document.getElementById('unlinkAccountSection').style.display = 'none';
-      }
-    } catch (error) {
-      console.error('Error checking linked account:', error);
-    }
-  }
-
-  // Handle unlink account functionality
-  document.getElementById('unlinkAccountButton').addEventListener('click', async () => {
-    try {
-      const response = await fetch('/unlink-account', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (response.ok) {
-        alert('Account unlinked successfully!');
-        // Update the UI to show the "Link Account" section
-        document.getElementById('linkAccountSection').style.display = 'block';
-        document.getElementById('unlinkAccountSection').style.display = 'none';
-        userEmail.textContent = userEmail.textContent.split(' (Summoner:')[0]; // Remove the summoner name
-      } else {
-        const error = await response.json();
-        alert(`Failed to unlink account: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error unlinking account:', error);
-      alert('An error occurred while unlinking the account.');
-    }
-  });
-
-  // Fetch and display match history
-  async function fetchMatchHistory() {
-    try {
-      const response = await fetch('/get-match-history', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (!response.ok) {
-        console.error('Failed to fetch match history');
-        return;
-      }
-
-      const matchHistory = await response.json();
-      console.log('Match History Response:', matchHistory);
-      renderMatchHistory(matchHistory);
-    } catch (error) {
-      console.error('Error fetching match history:', error);
-    }
-  }
-
-  // Call the function to fetch and display match history when the page loads
-  document.addEventListener('DOMContentLoaded', fetchMatchHistory);
-
-  // Update match history when the button is clicked
-  updateMatchHistoryButton.addEventListener('click', async () => {
-    try {
-      // Show the loading spinner
-      loadingSpinner.style.display = 'block';
-
-      const response = await fetch('/match-history', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        alert('Match history updated successfully!');
-        fetchMatchHistory(); // Refresh the match history table
-      } else {
-        const error = await response.json();
-        alert(`Failed to update match history: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error updating match history:', error);
-      alert('An error occurred while updating match history.');
-    } finally {
-      // Hide the loading spinner
-      loadingSpinner.style.display = 'none';
-    }
-  });
-
-  // Initial data fetch
-  fetchMatchHistory();
-  checkLoginStatus();
-
-  const toggleMatchHistoryButton = document.getElementById('toggleMatchHistory');
-  const matchHistoryTableElement = document.getElementById('matchHistoryTable');
-
-  // Toggle the visibility of the match history table
-  toggleMatchHistoryButton.addEventListener('click', () => {
-    if (matchHistoryTableElement.style.display === 'none') {
-      matchHistoryTableElement.style.display = 'table';
-      toggleMatchHistoryButton.textContent = 'Hide Table';
-    } else {
-      matchHistoryTableElement.style.display = 'none';
-      toggleMatchHistoryButton.textContent = 'Show Table';
-    }
-  });
-
-  const toggleChampionStatsButton = document.getElementById('toggleChampionStats');
-  const championStatsTableElement = document.getElementById('championStatsTable');
-
-  // Toggle the visibility of the champion stats table
-  toggleChampionStatsButton.addEventListener('click', () => {
-    if (championStatsTableElement.style.display === 'none') {
-      championStatsTableElement.style.display = 'table';
-      toggleChampionStatsButton.textContent = 'Hide Table';
-    } else {
-      championStatsTableElement.style.display = 'none';
-      toggleChampionStatsButton.textContent = 'Show Table';
-    }
-  });
-
-  const refreshChampionStatsButton = document.getElementById('refreshChampionStats');
-
-  // Fetch and populate champion stats
-  async function fetchChampionStats() {
-    try {
-      const response = await fetch('/get-champions');
-      if (response.ok) {
-        const champions = await response.json();
-
-        // Filter out champions with null KDA
-        const filteredChampions = champions.filter(champion => champion.kda !== null);
-
-        const championTable = document.querySelector('#championStatsTable tbody');
-        championTable.innerHTML = filteredChampions.map(champion => `
-          <tr>
-            <td>${champion.champion_name}</td>
-            <td>${champion.win_rate}%</td>
-            <td>${champion.kda}</td>
-          </tr>
-        `).join('');
-      } else {
-        console.error('Failed to fetch champion stats');
-      }
-    } catch (error) {
-      console.error('Error fetching champion stats:', error);
-    }
-  }
-
-  // Refresh champion stats when the button is clicked
-  refreshChampionStatsButton.addEventListener('click', fetchChampionStats);
-
-  // Initial data fetch
-  fetchChampionStats();
-
-  // Get elements for the register modal
-  const registerButton = document.getElementById('registerButton');
-  const registerModal = document.getElementById('registerModal');
-  const closeRegisterModal = document.getElementById('closeRegisterModal');
-
-  // Show the register modal when the register button is clicked
-  registerButton.addEventListener('click', () => {
-    registerModal.style.display = 'block';
-  });
-
-  // Close the register modal
-  closeRegisterModal.addEventListener('click', () => {
-    registerModal.style.display = 'none';
-  });
-
-  window.addEventListener('click', (event) => {
-    if (event.target === registerModal) {
-      registerModal.style.display = 'none';
-    }
-  });
-
-  // Handle register form submission
-  document.getElementById('registerForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const username = document.getElementById('registerUsername').value;
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-
-    try {
-      const response = await fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password })
-      });
-
-      if (response.ok) {
-        alert('Registration successful!');
-        registerModal.style.display = 'none';
-      } else {
-        const error = await response.json();
-        alert(`Error: ${error.message}`);
-      }
-    } catch (err) {
-      console.error('Error during registration:', err);
-      alert('An error occurred. Please try again.');
-    }
-  });
-
-  // Add event listener to the "Update Match History" button
-  document.getElementById('updateMatchHistoryButton').addEventListener('click', fetchMatchHistory);
-
-  // Check login and linked account status on page load
-  document.addEventListener('DOMContentLoaded', checkLoginAndLinkedAccount);
-
-  // Handle link account form submission
-  document.getElementById('linkAccountForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    try {
-      const gameName = document.getElementById('gameName').value;
-      const tagLine = document.getElementById('tagLine').value;
-      const region = document.getElementById('region').value;
-
-      const response = await fetch('/link-account-riotid', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gameName, tagLine, region }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert(`Account linked successfully! Summoner Name: ${data.data.summonerName}`);
-      } else {
-        const error = await response.json();
-        alert(`Failed to link account: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error linking account:', error);
-      alert('An error occurred while linking the account.');
-    }
-  });
-
-  // Handle unlink account functionality
-  document.getElementById('unlinkAccountButton').addEventListener('click', async () => {
-    try {
-      const response = await fetch('/unlink-account', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (response.ok) {
-        alert('Account unlinked successfully!');
-      } else {
-        const error = await response.json();
-        alert(`Failed to unlink account: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error unlinking account:', error);
-      alert('An error occurred while unlinking the account.');
-    }
-  });
-
-  // Check if the user is logged in and has a linked account
-  async function checkLoginAndLinkedAccount() {
-    try {
-      const loginResponse = await fetch('/check-login');
-      if (!loginResponse.ok) {
-        console.warn('User not logged in');
-        document.getElementById('linkAccountSection').style.display = 'none';
-        return;
-      }
-
-      const loginData = await loginResponse.json();
-      console.log('User logged in:', loginData);
-
-      const linkedAccountResponse = await fetch('/get-linked-account');
-      if (linkedAccountResponse.ok) {
-        const linkedAccount = await linkedAccountResponse.json();
-        console.log('Linked account found:', linkedAccount);
-
-        // Hide the link account section if an account is already linked
-        document.getElementById('linkAccountSection').style.display = 'none';
-      } else {
-        console.warn('No linked account found');
-        document.getElementById('linkAccountSection').style.display = 'block';
-      }
-    } catch (error) {
-      console.error('Error checking login or linked account:', error);
-    }
-  }
-
-  // Handle link account form submission
-  document.getElementById('linkAccountForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    try {
-      // Check if the user is logged in
-      const loginCheckResponse = await fetch('/check-login', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (!loginCheckResponse.ok) {
-        console.error('You must be logged in to link a League of Legends account.');
-        return;
-      }
-
-      // Proceed with linking the account if logged in
-      const gameName = document.getElementById('gameName').value;
-      const tagLine = document.getElementById('tagLine').value;
-      const region = document.getElementById('region').value;
-
-      const response = await fetch('/link-account-riotid', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gameName, tagLine, region })
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        console.log('Account linked successfully:', data);
-      } else {
-        console.error(`Error linking account: ${data.message}`);
-      }
-    } catch (error) {
-      console.error('Error linking account:', error);
-    }
-  });
-
-  // Add event listener to the "Update Match History" button
-  document.getElementById('updateMatchHistoryButton').addEventListener('click', fetchMatchHistory);
-
-  // Check login status on page load
-  document.addEventListener('DOMContentLoaded', checkLoginStatus);
-
-  function renderMatchHistory(matchHistory) {
-    const tableBody = document.getElementById('matchHistoryTable').querySelector('tbody');
-  
-    // Clear existing rows
-    tableBody.innerHTML = '';
-  
-    // Populate table with match history
-    matchHistory.forEach(match => {
-      const row = document.createElement('tr');
-  
-      row.innerHTML = `
-        <td>${match.match_id}</td>
-        <td>${match.champion_name}</td>
-        <td>${match.queue_id}</td>
-        <td>${match.win === 1 ? 'Win' : 'Loss'}</td>
-        <td>${match.kills}</td>
-        <td>${match.deaths}</td>
-        <td>${match.assists}</td>
-        <td>${match.total_damage_dealt}</td>
-        <td>${match.total_damage_taken}</td>
-        <td>${match.total_healing}</td>
-        <td>${match.wards_placed}</td>
-        <td>${match.wards_destroyed}</td>
-        <td>${match.vision_score}</td>
-        <td>${match.gold_earned}</td>
-        <td>${match.gold_spent}</td>
-        <td>${match.dragons_killed}</td>
-        <td>${match.barons_killed}</td>
-        <td>${match.turrets_destroyed}</td>
-        <td>${match.largest_killing_spree}</td>
-        <td>${match.largest_multi_kill}</td>
-        <td>${match.cs_per_minute}</td>
-      `;
-  
-      tableBody.appendChild(row);
-    });
-  }
-
-  async function linkAccount() {
-    const gameName = document.getElementById('gameName').value;
-    const tagLine = document.getElementById('tagLine').value;
-    const region = document.getElementById('region').value;
-  
-    try {
-      const response = await fetch('/link-account-riotid', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gameName, tagLine, region }),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        alert(`Account linked successfully! Summoner Name: ${data.data.summonerName}`);
-        // Update the UI to reflect the linked account
-      } else {
-        const error = await response.json();
-        alert(`Failed to link account: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error linking account:', error);
-      alert('An error occurred while linking the account.');
-    }
-  }
-
-  // Check if the user is logged in and has a linked account
-  async function checkLoginAndLinkedAccount() {
-    try {
-      const loginResponse = await fetch('/check-login');
-      if (!loginResponse.ok) {
-        console.warn('User not logged in');
-        document.getElementById('linkAccountSection').style.display = 'none';
-        return;
-      }
-
-      const loginData = await loginResponse.json();
-      console.log('User logged in:', loginData);
-
-      const linkedAccountResponse = await fetch('/get-linked-account');
-      if (linkedAccountResponse.ok) {
-        const linkedAccount = await linkedAccountResponse.json();
-        console.log('Linked account found:', linkedAccount);
-
-        // Hide the link account section if an account is already linked
-        document.getElementById('linkAccountSection').style.display = 'none';
-      } else {
-        console.warn('No linked account found');
-        document.getElementById('linkAccountSection').style.display = 'block';
-      }
-    } catch (error) {
-      console.error('Error checking login or linked account:', error);
-    }
-  }
-
-  // Handle link account form submission
-  document.getElementById('linkAccountForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    try {
-      const gameName = document.getElementById('gameName').value;
-      const tagLine = document.getElementById('tagLine').value;
-      const region = document.getElementById('region').value;
-
-      const response = await fetch('/link-account-riotid', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gameName, tagLine, region }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert(`Account linked successfully! Summoner Name: ${data.data.summonerName}`);
-        checkLoginAndLinkedAccount(); // Refresh the UI
-      } else {
-        const error = await response.json();
-        alert(`Failed to link account: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error linking account:', error);
-      alert('An error occurred while linking the account.');
-    }
-  });
-
-  // Handle unlink account functionality
-  document.getElementById('unlinkAccountButton').addEventListener('click', async () => {
-    try {
-      const response = await fetch('/unlink-account', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (response.ok) {
-        alert('Account unlinked successfully!');
-        checkLoginAndLinkedAccount(); // Refresh the UI
-      } else {
-        const error = await response.json();
-        alert(`Failed to unlink account: ${error.message}`);
-      }
-    } catch (error) {
-      console.error('Error unlinking account:', error);
-      alert('An error occurred while unlinking the account.');
-    }
-  });
-
-  // Check login and linked account status on page load
-  document.addEventListener('DOMContentLoaded', checkLoginAndLinkedAccount);
-
-  // Fetch and display recommendations
-  async function fetchRecommendations() {
-    try {
-      const response = await fetch('/recommendations');
-      if (response.ok) {
-        const recommendations = await response.json();
-        const container = document.getElementById('recommendationsContainer');
-
-        // Clear existing content
-        container.innerHTML = '';
-
-        // Populate recommendations
-        recommendations.forEach(rec => {
-          if (!rec.link) { // Use 'link' instead of 'url'
-            console.warn(`Skipping recommendation with missing link: ${rec.title}`);
-            return;
-          }
-
-          const recommendationElement = document.createElement('div');
-          recommendationElement.classList.add('recommendation');
-
-          if (rec.type === 'video') {
-            // Embed YouTube video
-            recommendationElement.innerHTML = `
-              <h3>${rec.title}</h3>
-              <p>${rec.description}</p>
-              <iframe width="560" height="315" src="${rec.link}" frameborder="0" allowfullscreen></iframe>
-            `;
-          } else if (rec.type === 'website') {
-            // Add link to website
-            recommendationElement.innerHTML = `
-              <h3>${rec.title}</h3>
-              <p>${rec.description}</p>
-              <a href="${rec.link}" target="_blank" class="btn btn-primary">Visit Resource</a>
-            `;
-          }
-
-          container.appendChild(recommendationElement);
-        });
-      } else {
-        console.error('Failed to fetch recommendations');
-      }
-    } catch (error) {
-      console.error('Error fetching recommendations:', error);
-    }
-  }
-
-  // Call the function to fetch recommendations on page load
-  document.addEventListener('DOMContentLoaded', fetchRecommendations);
-
-  // Fetch and display summoner profile stats
-  async function fetchSummonerProfile(summonerName) {
-    try {
-      const response = await fetch(`/summoner-profile/${encodeURIComponent(summonerName)}`);
-      if (response.ok) {
-        const data = await response.json();
-        const container = document.getElementById('summonerProfileContainer');
-
-        // Clear existing content
-        container.innerHTML = '';
-
-        // Display summoner profile stats
-        const profileElement = `
-          <div class="summoner-profile">
-            <img src="https://ddragon.leagueoflegends.com/cdn/13.8.1/img/profileicon/${data.profileIconId}.png" alt="Profile Icon" class="profile-icon">
-            <h3>${data.summonerName}</h3>
-            <p>Level: ${data.summonerLevel}</p>
-          </div>
-        `;
-
-        // Display ranked stats
-        const rankedStats = data.rankedStats.map(stat => `
-          <div class="ranked-stat">
-            <h4>${stat.queueType.replace('_', ' ')}</h4>
-            <p>Rank: ${stat.tier} ${stat.rank}</p>
-            <p>Wins: ${stat.wins}, Losses: ${stat.losses}</p>
-          </div>
-        `).join('');
-
-        container.innerHTML = profileElement + rankedStats;
-      } else {
-        console.error('Failed to fetch summoner profile');
-      }
-    } catch (error) {
-      console.error('Error fetching summoner profile:', error);
-    }
-  }
-
-  // Example usage: Fetch profile for a specific summoner
-  document.addEventListener('DOMContentLoaded', () => {
-    fetchSummonerProfile('SummonerName'); // Replace 'SummonerName' with the desired summoner name
-  });
-
-  fetch(`/summoner-profile/${summonerName}`)
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error('Error:', error));
-</script>
 </html>
