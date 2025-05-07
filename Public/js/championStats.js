@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateChampionStatsTable(stats) {
-        const tbody = document.getElementById('championStatsBody');
-        tbody.innerHTML = '';
+        const tableBody = document.querySelector('#championStatsTable tbody');
+        tableBody.innerHTML = '';
 
         stats.forEach(stat => {
             const row = document.createElement('tr');
@@ -25,9 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${stat.games_played}</td>
                 <td>${stat.win_rate}%</td>
                 <td>${stat.kda}</td>
-                <td>${stat.cs_per_minute}</td>
             `;
-            tbody.appendChild(row);
+            tableBody.appendChild(row);
         });
     }
 

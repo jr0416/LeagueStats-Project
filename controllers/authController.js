@@ -186,3 +186,31 @@ exports.resetPassword = async (req, res) => {
     res.status(500).json({ message: 'Server error during password reset' });
   }
 };
+
+exports.unlinkAccount = async (req, res) => {
+    console.log('Unlink account endpoint hit'); // Debug log
+
+    if (!req.session || !req.session.user) {
+        console.log('No session or user found'); // Debug log
+        return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+
+    try {
+        const userId = req.session.user.userId;
+        console.log('Attempting to unlink account for user:', userId); // Debug log
+
+        const [result] = await pool.query('DELETE FROM lol_accounts WHERE user_id = ?', [userId]);
+        console.log('Query result:', result); // Debug log
+
+        if (result.affectedRows > 0) {
+            console.log('Account unlinked successfully'); // Debug log
+            res.json({ success: true, message: 'Account unlinked successfully' });
+        } else {
+            console.log('No account found to unlink'); // Debug log
+            res.status(404).json({ success: false, message: 'No account found to unlink' });
+        }
+    } catch (error) {
+        console.error('Error unlinking account:', error);
+        res.status(500).json({ success: false, message: 'Failed to unlink account' });
+    }
+};

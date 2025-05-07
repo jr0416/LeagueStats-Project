@@ -1,8 +1,8 @@
 const axios = require('axios');
 const { pool } = require('../db');
 
-const MATCHES_TO_FETCH = 50; // Changed from 100 to 50
-const RATE_LIMIT_DELAY = 200; // Increase delay between requests
+const MATCHES_TO_FETCH = 50; 
+const RATE_LIMIT_DELAY = 200; 
 
 // Helper function to map platform region to Match-V5 routing value
 function getMatchBaseUrl(region) {
@@ -58,9 +58,9 @@ async function getMatchHistory(puuid, region) {
       },
       params: {
         start: 0,
-        count: 50  // Explicitly set to 50
+        count: 50  
       },
-      timeout: 10000 // 10 second timeout
+      timeout: 10000 
     });
 
     if (!response.data || !Array.isArray(response.data)) {
@@ -123,7 +123,7 @@ async function updateMatchHistory(req, res) {
 
     for (const matchId of matchIds) {
       try {
-        // Increase delay between match detail requests
+        // delay between match detail requests
         await sleep(RATE_LIMIT_DELAY);
         
         console.log(`Fetching match details for matchId: ${matchId}`);
@@ -143,7 +143,7 @@ async function updateMatchHistory(req, res) {
 
         console.log(`Processing match ${matchId} for linked account.`);
 
-        // Replace the champion validation section with this:
+        
         try {
             // Log what we receive from Riot API
             console.log(`Champion Riot ID from API: ${participant.championId}`);
@@ -164,8 +164,8 @@ async function updateMatchHistory(req, res) {
                 [
                     matchId,
                     account.lol_account_id,
-                    champion_riot_id,  // Add champion_id value (using riot_id temporarily)
-                    champion_riot_id,  // champion_riot_id value
+                    champion_riot_id,  
+                    champion_riot_id,  
                     matchDetails.info.queueId,
                     participant.win ? 1 : 0,
                     participant.kills,

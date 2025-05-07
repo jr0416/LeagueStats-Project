@@ -65,6 +65,43 @@ async function populateChampionsOnStartup() {
     }
 }
 
+async function calculateChampionStats(matches, puuid) {
+    const championStats = {};
+
+    matches.forEach(match => {
+        const participant = match.info.participants.find(p => p.puuid === puuid);
+        if (!participant) return;
+
+        const championId = participant.championId;
+
+        if (!championStats[championId]) {
+            championStats[championId] = {
+                champion_name: participant.championName,
+                games_played: 0,
+                wins: 0,
+                kills: 0,
+                deaths: 0,
+                assists: 0
+            };
+        }
+
+        const stats = championStats[championId];
+        stats.games_played++;
+        stats.wins += participant.win ? 1 : 0;
+        stats.kills += participant.kills;
+        stats.deaths += participant.deaths;
+        stats.assists += participant.assists;
+    });
+
+    // Calculate averages
+    Object.values(championStats).forEach(stats => {
+        stats.win_rate = ((stats.wins / stats.games_played) * 100).toFixed(1);
+        stats.kda = ((stats.kills + stats.assists) / Math.max(1, stats.deaths)).toFixed(2);
+    });
+
+    return Object.values(championStats);
+}
+
 // Keep existing updateChampions function but update it to use latest version
 exports.updateChampions = async (req, res) => {
     try {

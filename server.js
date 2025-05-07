@@ -218,45 +218,34 @@ app.post('/link-account-riotid', async (req, res) => {
 
 // Route to get linked League of Legends account for the logged-in user
 app.get('/get-linked-account', async (req, res) => {
-  if (!req.session.user) {
-    console.log('User not authenticated'); // Debugging log
-    return res.status(401).json({ message: 'User not authenticated' });
-  }
-
-  const userId = req.session.user.userId;
-
-  try {
-    console.log(`Fetching linked account for user ID: ${userId}`); // Debugging log
-    const [accounts] = await pool.query('SELECT * FROM lol_accounts WHERE user_id = ?', [userId]);
-    if (accounts.length === 0) {
-      console.log('No linked account found'); // Debugging log
-      return res.status(404).json({ message: 'No linked League of Legends account found' });
+    if (!req.session.user) {
+        return res.json({ success: false, message: 'Not logged in' });
     }
 
-    console.log('Linked account found:', accounts[0]); // Debugging log
-    res.status(200).json(accounts[0]); // Return the linked account details
-  } catch (error) {
-    console.error('Error checking linked account:', error);
-    res.status(500).json({ message: 'Error checking linked account' });
-  }
-});
+    try {
+        const [accounts] = await pool.query(
+            'SELECT game_name, tag_line FROM lol_accounts WHERE user_id = ?',
+            [req.session.user.userId]
+        );
 
-// Route to unlink a League of Legends account
-app.post('/unlink-account', async (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ message: 'User not authenticated' });
-  }
-
-  const userId = req.session.user.userId;
-
-  try {
-    // Delete the linked account from the database
-    await pool.query('DELETE FROM lol_accounts WHERE user_id = ?', [userId]);
-    res.status(200).json({ message: 'Account unlinked successfully' });
-  } catch (error) {
-    console.error('Error unlinking account:', error.message);
-    res.status(500).json({ message: 'Error unlinking account', error: error.message });
-  }
+        if (accounts.length > 0) {
+            return res.json({
+                success: true,
+                account: accounts[0]
+            });
+        } else {
+            return res.json({
+                success: false,
+                message: 'No linked account found'
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching linked account:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error fetching linked account'
+        });
+    }
 });
 
 // Endpoint to fetch recommendations
@@ -359,7 +348,74 @@ app.get('/get-match-history/champion/:championRiotId', async (req, res) => {
     }
 });
 
+// Add this route
+app.get('/check-linked-account', async (req, res) => {
+    if (!req.session.user) {
+        return res.json({ hasLinkedAccount: false });
+    }
+
+    try {
+        const [accounts] = await pool.query(
+            'SELECT game_name FROM lol_accounts WHERE user_id = ?',
+            [req.session.user.userId]
+        );
+
+        return res.json({
+            hasLinkedAccount: accounts.length > 0,
+            gameName: accounts.length > 0 ? accounts[0].game_name : null
+        });
+    } catch (error) {
+        console.error('Error checking linked account:', error);
+        return res.status(500).json({ message: 'Error checking linked account' });
+    }
+});
+
 // Add near the bottom of the file, before app.listen
+app.post('/logout', (req, res) => {
+    if (req.session) {
+        req.session.destroy(err => {
+            if (err) {
+                console.error('Session destruction error:', err);
+                return res.status(500).json({ message: 'Error logging out' });
+            }
+            res.clearCookie('connect.sid'); // Clear the session cookie
+            res.json({ message: 'Logged out successfully' });
+        });
+    } else {
+        res.json({ message: 'Already logged out' });
+    }
+});
+
+app.get('/check-login', (req, res) => {
+    if (req.session && req.session.user) {
+        res.json({
+            email: req.session.user.email
+        });
+    } else {
+        res.json({
+            email: null
+        });
+    }
+});
+
+// Remove the existing unlink-account route and add this one
+app.post('/unlink-account', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ message: 'User not authenticated' });
+    }
+
+    const userId = req.session.user.userId;
+
+    try {
+        // Delete the linked account from the database
+        await pool.query('DELETE FROM lol_accounts WHERE user_id = ?', [userId]);
+        res.status(200).json({ message: 'Account unlinked successfully' });
+    } catch (error) {
+        console.error('Error unlinking account:', error.message);
+        res.status(500).json({ message: 'Error unlinking account', error: error.message });
+    }
+});
+
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
     try {

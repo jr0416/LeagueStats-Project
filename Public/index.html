@@ -4,224 +4,238 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LeagueStats</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body style="background-color: #32CD32;">
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <h1>LeagueStats</h1>
-            </div>
-            <div class="auth-container">
-                <div id="userInfo">
-                    <span id="userEmail"></span>
-                    <button id="logoutButton" class="btn btn-secondary">Logout</button>
-                </div>
-                <div class="auth-buttons">
-                    <button id="registerButton" class="btn btn-secondary">Register</button>
-                    <button id="loginButton" class="btn btn-primary">Login</button>
-                </div>
-            </div>
-            <div class="link-account-container">
-                <button id="linkAccountButton" class="btn btn-secondary">Link LoL Account</button>
-                <button id="unlinkAccountButton" class="btn btn-danger">Unlink Account</button>
-            </div>
+    <div class="header">
+        <h1>League Stats</h1>
+        <div id="welcomeMessage" class="welcome-message">
+            <h2>Welcome <span id="summonerName"></span></h2>
         </div>
-    </header>
-
-    <!-- This should be after your header but before main content -->
-    <div id="linkAccountModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Link League Account</h2>
-            <form id="linkAccountForm">
-                <div class="form-group">
-                    <label for="gameName">Game Name:</label>
-                    <input type="text" id="gameName" required>
-                </div>
-                <div class="form-group">
-                    <label for="tagLine">Tag Line:</label>
-                    <input type="text" id="tagLine" required>
-                </div>
-                <div class="form-group">
-                    <label for="region">Region:</label>
-                    <select id="region" required>
-                        <option value="">Select Region</option>
-                        <option value="na1">North America</option>
-                        <option value="euw1">Europe West</option>
-                        <option value="eune1">Europe Nordic & East</option>
-                        <option value="kr">Korea</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Link Account</button>
-            </form>
+        <div class="header-controls">
+            <div id="userInfo" style="display: none;">
+                <span id="userEmail"></span>
+                <button id="logoutButton" class="btn btn-secondary">Logout</button>
+            </div>
+            <div id="authButtons">
+                <button id="loginButton" class="btn btn-primary">Login</button>
+                <button id="registerButton" class="btn btn-secondary">Register</button>
+            </div>
+            <div id="accountControls" style="display: none;">
+                <button id="linkAccountButton" class="btn btn-primary">Link LoL Account</button>
+                <button id="unlinkAccountButton" class="btn btn-danger" onclick="console.log('HTML onclick')">Unlink Account</button>
+            </div>
         </div>
     </div>
 
-    <main>
-        <!-- Match History Section -->
-        <div class="match-history-container-box">
-            <div class="match-history-header">
-                <h2>Match History</h2>
-                <div class="match-history-controls">
-                    <div class="button-group">
-                        <button id="toggleMatchHistory" class="btn btn-secondary">Hide Table</button>
-                        <button id="updateMatchHistory" class="btn btn-secondary">Update Match History</button>
-                    </div>
+    <div class="container">
+        <div class="main-content">
+            <div id="linkAccountModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Link League Account</h2>
+                    <form id="linkAccountForm">
+                        <div class="form-group">
+                            <label for="gameName">Game Name:</label>
+                            <input type="text" id="gameName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tagLine">Tag Line:</label>
+                            <input type="text" id="tagLine" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="region">Region:</label>
+                            <select id="region" required>
+                                <option value="">Select Region</option>
+                                <option value="na1">North America</option>
+                                <option value="euw1">Europe West</option>
+                                <option value="eune1">Europe Nordic & East</option>
+                                <option value="kr">Korea</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Link Account</button>
+                    </form>
                 </div>
             </div>
-            
-            <div class="match-history-content">
-                <table id="matchHistoryTable">
-                    <thead>
-                        <tr>
-                            <th></th> <!-- For expand button -->
-                            <th>Champion</th>
-                            <th>Queue</th>
-                            <th>Result</th>
-                            <th>KDA</th>
-                        </tr>
-                    </thead>
-                    <tbody id="matchHistoryBody">
-                        <!-- Match rows will be inserted here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
-        <!-- Champion Stats Section -->
-        <div class="champion-stats-container">
-            <div class="champion-stats-controls">
-                <h2>Champion Stats</h2>
-                <div class="button-group">
-                    <button id="toggleChampionStats" class="btn btn-secondary">Hide Table</button>
-                    <button id="refreshChampionStats" class="btn btn-secondary">Refresh Stats</button>
+            <div class="container">
+                <div class="main-content">
+                    <main>
+                        <!-- Match History Section -->
+                        <div class="match-history-container-box">
+                            <div class="match-history-header">
+                                <h2>Match History</h2>
+                                <div class="match-history-controls">
+                                    <div class="button-group">
+                                        <button id="toggleMatchHistory" class="btn btn-secondary">Hide Table</button>
+                                        <button id="updateMatchHistory" class="btn btn-secondary">Update Match History</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="match-history-content">
+                                <table id="matchHistoryTable">
+                                    <thead>
+                                        <tr>
+                                            <th></th> <!-- For expand button -->
+                                            <th>Champion</th>
+                                            <th>Queue</th>
+                                            <th>Result</th>
+                                            <th>KDA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="matchHistoryBody">
+                                        <!-- Match rows will be inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Champion Stats Section -->
+                        <div class="champion-stats-container">
+                            <div class="champion-stats-controls">
+                                <h2>Champion Stats</h2>
+                                <div class="button-group">
+                                    <button id="toggleChampionStats" class="btn btn-secondary">Hide Table</button>
+                                    <button id="refreshChampionStats" class="btn btn-secondary">Refresh Stats</button>
+                                </div>
+                            </div>
+                            <div class="champion-stats-table-wrapper">
+                                <table id="championStatsTable" class="champion-stats-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Champion</th>
+                                            <th>Games</th>
+                                            <th>Win Rate</th>
+                                            <th>KDA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="championStatsBody">
+                                        <!-- JavaScript will populate this -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Player Improvement Resources Section -->
+                        <section id="recommendationsSection" class="recommendation-section">
+                            <div class="recommendation-content">
+                                <h2>Player Improvement Resources</h2>
+                                <div id="recommendationsContainer">
+                                    <!-- Recommendations content -->
+                                </div>
+                            </div>
+                        </section>
+
+
+
+                        <!-- Summoner Profile Section -->
+                        <section id="summonerProfileSection" class="box">
+                            <h2>Summoner Profile</h2>
+                            <div id="summonerProfileContainer" class="summoner-profile-container"></div>
+                        </section>
+                    </main>
                 </div>
             </div>
-            <div class="champion-stats-table-wrapper">
-                <table id="championStatsTable" class="champion-stats-table">
-                    <thead>
-                        <tr>
-                            <th>Champion</th>
-                            <th>Games</th>
-                            <th>Win Rate</th>
-                            <th>KDA</th>
-                            <th>CS/min</th>
-                        </tr>
-                    </thead>
-                    <tbody id="championStatsBody">
-                        <!-- JavaScript will populate this -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
-        <!-- Player Improvement Resources Section -->
-        <section id="recommendationsSection" class="box">
-            <h2>Player Improvement Resources</h2>
-            <div id="recommendationsContainer">
-                <!-- Recommendations content -->
-            </div>
-        </section>
-
-        <!-- Summoner Profile Section -->
-        <section id="summonerProfileSection" class="box">
-            <h2>Summoner Profile</h2>
-            <div id="summonerProfileContainer">
-                <!-- Summoner profile stats will be dynamically added here -->
-            </div>
-        </section>
-    </main>
-
-    <!-- Link Account Modal -->
-    <div id="linkAccountModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Link League of Legends Account</h2>
-            <form id="linkAccountForm">
-                <div class="form-group">
-                    <label for="gameName">Game Name:</label>
-                    <input type="text" id="gameName" required placeholder="Your LoL game name">
+            <!-- Link Account Modal -->
+            <div id="linkAccountModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Link League of Legends Account</h2>
+                    <form id="linkAccountForm">
+                        <div class="form-group">
+                            <label for="gameName">Game Name:</label>
+                            <input type="text" id="gameName" required placeholder="Your LoL game name">
+                        </div>
+                        <div class="form-group">
+                            <label for="tagLine">Tag Line:</label>
+                            <input type="text" id="tagLine" required placeholder="Your tag (e.g., NA1)">
+                        </div>
+                        <div class="form-group">
+                            <label for="region">Region:</label>
+                            <select id="region" required>
+                                <option value="">Select Region</option>
+                                <option value="na1">North America</option>
+                                <option value="euw1">Europe West</option>
+                                <option value="eune1">Europe Nordic & East</option>
+                                <option value="kr">Korea</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Link Account</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="tagLine">Tag Line:</label>
-                    <input type="text" id="tagLine" required placeholder="Your tag (e.g., NA1)">
+            </div>
+
+            <!-- Login Modal -->
+            <div id="loginModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Login</h2>
+                    <form id="loginForm">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" required>
+                        <label for="loginPassword">Password:</label>
+                        <input type="password" id="loginPassword" required>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <button type="button" class="btn btn-secondary" id="forgotPassword">Forgot Password?</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="region">Region:</label>
-                    <select id="region" required>
-                        <option value="">Select Region</option>
-                        <option value="na1">North America</option>
-                        <option value="euw1">Europe West</option>
-                        <option value="eune1">Europe Nordic & East</option>
-                        <option value="kr">Korea</option>
-                    </select>
+            </div>
+
+            <!-- Register Modal -->
+            <div id="registerModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Register</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">Username:</label>
+                            <input type="text" id="registerUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email:</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password:</label>
+                            <input type="password" id="registerPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password:</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-primary">Link Account</button>
-            </form>
-        </div>
-    </div>
+            </div>
 
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Login</h2>
-            <form id="loginForm">
-                <label for="loginEmail">Email:</label>
-                <input type="email" id="loginEmail" required>
-                <label for="loginPassword">Password:</label>
-                <input type="password" id="loginPassword" required>
-                <button type="submit" class="btn btn-primary">Login</button>
-                <button type="button" class="btn btn-secondary" id="forgotPassword">Forgot Password?</button>
-            </form>
-        </div>
-    </div>
+            <div id="loadingSpinner" class="spinner" style="display: none;"></div>
 
-    <!-- Register Modal -->
-    <div id="registerModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Register</h2>
-            <form id="registerForm">
-                <label for="registerEmail">Email:</label>
-                <input type="email" id="registerEmail" required>
-                <label for="registerPassword">Password:</label>
-                <input type="password" id="registerPassword" required>
-                <label for="confirmPassword">Confirm Password:</label>
-                <input type="password" id="confirmPassword" required>
-                <button type="submit" class="btn btn-primary">Register</button>
-            </form>
-        </div>
-    </div>
+           
+            <script>
+                // Fetch champion data from Data Dragon
+                fetch('https://ddragon.leagueoflegends.com/cdn/14.8.1/data/en_US/champion.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const championData = {};
+                        Object.values(data.data).forEach(champion => {
+                            championData[champion.key] = {
+                                name: champion.name,
+                                key: champion.id
+                            };
+                        });
+                        window.championData = championData;
+                    })
+                    .catch(error => console.error('Error loading champion data:', error));
+            </script>
 
-    <div id="loadingSpinner" class="spinner" style="display: none;"></div>
-
-    <!-- Add this before your other scripts -->
-    <script>
-        // Fetch champion data from Data Dragon
-        fetch('https://ddragon.leagueoflegends.com/cdn/14.8.1/data/en_US/champion.json')
-            .then(response => response.json())
-            .then(data => {
-                const championData = {};
-                Object.values(data.data).forEach(champion => {
-                    championData[champion.key] = {
-                        name: champion.name,
-                        key: champion.id
-                    };
-                });
-                window.championData = championData;
-            })
-            .catch(error => console.error('Error loading champion data:', error));
-    </script>
-
-    <!-- Scripts -->
-    <script src="/js/auth.js"></script>
-    <script src="/js/matchHistory.js"></script>
-    <script src="/js/championStats.js"></script>
-    <script src="/js/account.js"></script>
-    <script src="/js/recommendations.js"></script>
-    <script src="/js/summonerProfile.js"></script>
+            <script src="/js/account.js"></script>
+            <script src="/js/auth.js"></script>
+            <script src="/js/matchHistory.js"></script>
+            <script src="/js/championStats.js"></script>
+            <script src="/js/recommendations.js"></script>
+            <script src="/js/summonerProfile.js"></script>
+    
 </body>
 </html>

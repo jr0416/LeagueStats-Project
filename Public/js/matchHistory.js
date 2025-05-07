@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             440: "Ranked Flex",
             450: "ARAM"
         };
-        return queueTypes[queueId] || "Other";
+        return queueTypes[queueId] || "Event";
     }
 
     // Replace the createMatchRow function
